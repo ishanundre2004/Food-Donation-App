@@ -1,0 +1,141 @@
+# Flutter related
+**/build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+
+# Firebase related
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+firebase-debug.log
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Flutter generated files
+*.log
+*.lock
+**/doc/api/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+
+# IDE and Editor related
+*.iml
+.idea/
+*.ipr
+*.iws
+*.swp
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.user
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+*.directory
+
+# Linux
+.directory
+
+# Android
+**/android/.gradle
+**/android/.idea
+**/android/captures
+**/android/local.properties
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+
+# iOS
+**/ios/.generated/
+**/ios/Pods/
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/engine/
+**/ios/Flutter/engine.xcframework
+**/ios/Flutter/flutter_assets
+**/ios/Flutter/generated_plugin_registrant.dart
+**/ios/Flutter/Generated.xcconfig
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# Miscellaneous
+*.class
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+.DS_Store
+*.bak
+*.orig
+*.rej
+*~ 
+*.tmp
+*.temp
+migrate_working_dir/
+
+# Generated lock files
+pubspec.lock
+yarn.lock
+package-lock.json
+
+# Generated artifacts
+*.lock
+*.log
+
+# Firebase Emulator Suite files
+firebase-debug.log
+firebase-debug.*
+.firebaserc
+.firebase/
+
+# Secrets and sensitive files
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+*.key
+*.pem
+*.crt
+
+# Build results
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/engine/
+ios/Flutter/flutter_assets
+ios/Flutter/generated_plugin_registrant.dart
+ios/Flutter/Generated.xcconfig
+
+# Temporary files
+*.tmp
+*.temp
+
+# Crashlytics
+**/crashlytics/
+crashlytics-build.properties
+
+# Fastlane (if used)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
