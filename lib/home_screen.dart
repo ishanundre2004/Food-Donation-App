@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String username = "";
   String address = "Fetching location...";
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -45,26 +46,18 @@ class _HomePageState extends State<HomePage> {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Location services are disabled. Exiting app.')),
-      );
+      _showSnackBar('Location services are disabled. Exiting app.');
       Future.delayed(const Duration(seconds: 2), () => Navigator.pop(context));
       return;
     }
 
-    // Check for location permissions
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Location permission denied. Exiting app.')),
-        );
+        _showSnackBar('Location permission denied. Exiting app.');
         Future.delayed(
             const Duration(seconds: 2), () => Navigator.pop(context));
         return;
@@ -72,28 +65,23 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Location permissions are permanently denied. Exiting app.')),
-      );
+      _showSnackBar(
+          'Location permissions are permanently denied. Exiting app.');
       Future.delayed(const Duration(seconds: 2), () => Navigator.pop(context));
       return;
     }
 
-    // Get the current position
     try {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
-      // Use reverse geocoding to get the address
       List<Placemark> placemarks =
           await placemarkFromCoordinates(position.latitude, position.longitude);
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
         setState(() {
           address =
-              "${place.name},\n${place.subLocality}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}";
+              "${place.name}, ${place.subLocality},\n${place.locality}, ${place.administrativeArea}, ${place.postalCode}";
         });
       } else {
         setState(() {
@@ -105,6 +93,25 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         address = "Error fetching address.";
       });
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 1:
+        Navigator.pushNamed(context, '/leaderboard');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/adddonation');
+        break;
     }
   }
 
@@ -126,55 +133,31 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Row(
-      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     children: [
-      //       Column(
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: [
-      //           Text(username, style: const TextStyle(fontSize: 16)),
-      //           const Text("Andheri, Mumbai", style: TextStyle(fontSize: 14)),
-      //         ],
-      //       ),
-      //       FloatingActionButton(
-      //         onPressed: () {
-      //           _navigateToProfile();
-      //         },
-      //         child: const Icon(Icons.person),
-      //       ),
-      //     ],
-      //   ),
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      // ),
-      body: Expanded(
+      body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 30.0),
+                padding: const EdgeInsets.only(top: 10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Text(username, style: const TextStyle(fontSize: 16)),
                         Text(address, style: const TextStyle(fontSize: 14)),
                       ],
                     ),
                     FloatingActionButton(
-                      onPressed: () {
-                        _navigateToProfile();
-                      },
+                      onPressed: _navigateToProfile,
                       child: const Icon(Icons.person),
                     ),
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
               Text(
                 "Hello, $username",
                 style: const TextStyle(
@@ -184,16 +167,13 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 8),
               const Text(
-                "There are 6 NGO's near your location",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.teal,
-                ),
+                "There are 6 NGOs near your location",
+                style: TextStyle(fontSize: 16, color: Colors.teal),
               ),
               const SizedBox(height: 20),
               Expanded(
                 child: GridView.count(
-                  crossAxisCount: 2,
+                  crossAxisCount: 1,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                   children: [
@@ -245,7 +225,7 @@ class _HomePageState extends State<HomePage> {
                       "lib/assets/1.jpeg",
                       "400+ Members",
                     ),
-                    // Other NGO cards...
+                    // Add more NGOs if needed
                   ],
                 ),
               ),
@@ -261,7 +241,9 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: Icon(Icons.add_circle), label: 'Add Donation'),
         ],
+        currentIndex: _selectedIndex,
         selectedItemColor: Colors.teal,
+        onTap: _onItemTapped,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _logout,
@@ -270,53 +252,71 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildNGOCard(
-    String title,
-    String location,
-    String peoplePerDay,
-    String time,
-    String imagePath,
-    String members,
-  ) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      elevation: 4,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: Image.asset(
-              imagePath,
-              height: 100,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+  Widget _buildNGOCard(String title, String location, String peoplePerDay,
+      String time, String imagePath, String members) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        return Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          elevation: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15)),
+                child: Image.asset(
+                  imagePath,
+                  height: width * 0.5,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
-                Text(location, style: const TextStyle(color: Colors.grey)),
-                const SizedBox(height: 4),
-                Text(peoplePerDay),
-                Text(time),
-                const SizedBox(height: 4),
-                Text(members, style: const TextStyle(color: Colors.teal)),
-              ],
-            ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(width * 0.04),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: width * 0.05,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: width * 0.01),
+                    Text(location,
+                        style: TextStyle(
+                          fontSize: width * 0.04,
+                          color: Colors.grey,
+                        )),
+                    SizedBox(height: width * 0.01),
+                    Text(peoplePerDay,
+                        style: TextStyle(
+                          fontSize: width * 0.04,
+                          color: Colors.teal,
+                        )),
+                    SizedBox(height: width * 0.01),
+                    Text(time,
+                        style: TextStyle(
+                          fontSize: width * 0.04,
+                        )),
+                    SizedBox(height: width * 0.01),
+                    Text(members,
+                        style: TextStyle(
+                          fontSize: width * 0.04,
+                          color: Colors.blue,
+                        )),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:foodon/adddonation_screen.dart';
+import 'package:foodon/leaderboard_screen.dart';
 import 'package:foodon/profile_screen.dart';
 // import 'package:foodon/login_screen.dart';
 // import 'package:foodon/signup_screen.dart';
@@ -27,6 +29,8 @@ class MyApp extends StatelessWidget {
       home: const Wrapper(),
       routes: {
         '/profile': (context) => ProfilePage(),
+        '/leaderboard': (context) => LeaderboardPage(),
+        '/adddonation': (context) => AddDonationPage(),
         // other routes
       },
     );
