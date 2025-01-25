@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodon/detail_screen.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -139,96 +140,91 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(address, style: const TextStyle(fontSize: 14)),
-                      ],
-                    ),
-                    FloatingActionButton(
-                      onPressed: _navigateToProfile,
-                      child: const Icon(Icons.person),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                "Hello, $username",
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                "There are 6 NGOs near your location",
-                style: TextStyle(fontSize: 16, color: Colors.teal),
-              ),
-              const SizedBox(height: 20),
               Expanded(
-                child: GridView.count(
-                  crossAxisCount: 1,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  children: [
-                    _buildNGOCard(
-                      "Feeding India",
-                      "Aundh, Pune",
-                      "250 People/Day",
-                      "4:00 PM - 10:00 PM",
-                      "lib/assets/1.jpeg",
-                      "1000+ Members",
-                    ),
-                    _buildNGOCard(
-                      "Helping Hands",
-                      "Koregaon Park, Pune",
-                      "300 People/Day",
-                      "10:00 AM - 6:00 PM",
-                      "lib/assets/1.jpeg",
-                      "800+ Members",
-                    ),
-                    _buildNGOCard(
-                      "Smile Foundation",
-                      "Baner, Pune",
-                      "150 Children/Day",
-                      "9:00 AM - 5:00 PM",
-                      "lib/assets/1.jpeg",
-                      "500+ Members",
-                    ),
-                    _buildNGOCard(
-                      "Udaan Welfare",
-                      "Hingane, Pune",
-                      "200 People/Day",
-                      "11:00 AM - 7:00 PM",
-                      "lib/assets/1.jpeg",
-                      "600+ Members",
-                    ),
-                    _buildNGOCard(
-                      "Green Earth",
-                      "MG Road, Pune",
-                      "500 Trees/Month",
-                      "7:00 AM - 3:00 PM",
-                      "lib/assets/1.jpeg",
-                      "1200+ Members",
-                    ),
-                    _buildNGOCard(
-                      "Care & Share",
-                      "Dhayari, Pune",
-                      "100 People/Day",
-                      "12:00 PM - 8:00 PM",
-                      "lib/assets/1.jpeg",
-                      "400+ Members",
-                    ),
-                    // Add more NGOs if needed
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(address,
+                                    style: const TextStyle(fontSize: 14)),
+                              ],
+                            ),
+                            FloatingActionButton(
+                              onPressed: _navigateToProfile,
+                              child: const Icon(Icons.person),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        "Hello, $username\n"
+                        "There are 6 NGOs near your location",
+                        style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.teal,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 20),
+                      _buildNGOCard(
+                        "Feeding India",
+                        "Aundh, Pune",
+                        "250 People/Day",
+                        "4:00 PM - 10:00 PM",
+                        "lib/assets/1.jpeg",
+                        "1000+ Members",
+                      ),
+                      _buildNGOCard(
+                        "Helping Hands",
+                        "Koregaon Park, Pune",
+                        "300 People/Day",
+                        "10:00 AM - 6:00 PM",
+                        "lib/assets/1.jpeg",
+                        "800+ Members",
+                      ),
+                      _buildNGOCard(
+                        "Smile Foundation",
+                        "Baner, Pune",
+                        "150 Children/Day",
+                        "9:00 AM - 5:00 PM",
+                        "lib/assets/1.jpeg",
+                        "500+ Members",
+                      ),
+                      _buildNGOCard(
+                        "Udaan Welfare",
+                        "Hingane, Pune",
+                        "200 People/Day",
+                        "11:00 AM - 7:00 PM",
+                        "lib/assets/1.jpeg",
+                        "600+ Members",
+                      ),
+                      _buildNGOCard(
+                        "Green Earth",
+                        "MG Road, Pune",
+                        "500 Trees/Month",
+                        "7:00 AM - 3:00 PM",
+                        "lib/assets/1.jpeg",
+                        "1200+ Members",
+                      ),
+                      _buildNGOCard(
+                        "Care & Share",
+                        "Dhayari, Pune",
+                        "100 People/Day",
+                        "12:00 PM - 8:00 PM",
+                        "lib/assets/1.jpeg",
+                        "400+ Members",
+                      ),
+                      // Add more NGOs if needed
+                    ],
+                  ),
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -257,63 +253,80 @@ class _HomePageState extends State<HomePage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        return Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          elevation: 5,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15)),
-                child: Image.asset(
-                  imagePath,
-                  height: width * 0.5,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailScreen(
+                  title: title,
+                  location: location,
+                  peoplePerDay: peoplePerDay,
+                  time: time,
+                  imagePath: imagePath,
+                  members: members,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.all(width * 0.04),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: width * 0.05,
-                        fontWeight: FontWeight.bold,
+            );
+          },
+          child: Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            elevation: 5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15)),
+                  child: Image.asset(
+                    imagePath,
+                    height: width * 0.5,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(width * 0.04),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: width * 0.05,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: width * 0.01),
-                    Text(location,
-                        style: TextStyle(
-                          fontSize: width * 0.04,
-                          color: Colors.grey,
-                        )),
-                    SizedBox(height: width * 0.01),
-                    Text(peoplePerDay,
-                        style: TextStyle(
-                          fontSize: width * 0.04,
-                          color: Colors.teal,
-                        )),
-                    SizedBox(height: width * 0.01),
-                    Text(time,
-                        style: TextStyle(
-                          fontSize: width * 0.04,
-                        )),
-                    SizedBox(height: width * 0.01),
-                    Text(members,
-                        style: TextStyle(
-                          fontSize: width * 0.04,
-                          color: Colors.blue,
-                        )),
-                  ],
+                      SizedBox(height: width * 0.01),
+                      Text(location,
+                          style: TextStyle(
+                            fontSize: width * 0.04,
+                            color: Colors.grey,
+                          )),
+                      SizedBox(height: width * 0.01),
+                      Text(peoplePerDay,
+                          style: TextStyle(
+                            fontSize: width * 0.04,
+                            color: Colors.teal,
+                          )),
+                      SizedBox(height: width * 0.01),
+                      Text(time,
+                          style: TextStyle(
+                            fontSize: width * 0.04,
+                          )),
+                      SizedBox(height: width * 0.01),
+                      Text(members,
+                          style: TextStyle(
+                            fontSize: width * 0.04,
+                            color: Colors.blue,
+                          )),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
